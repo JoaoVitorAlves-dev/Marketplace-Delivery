@@ -2,6 +2,8 @@ package joao.alves.delivery.marketplace.domain;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "tb_pedidos")
 public class Pedido {
@@ -26,7 +28,7 @@ public class Pedido {
     private Status status = Status.PENDENTE;
 
     @Column(nullable = false)
-    private Long total;
+    private BigDecimal total;
 
     public enum Status {
         PENDENTE,
@@ -75,11 +77,11 @@ public class Pedido {
         this.status = status;
     }
 
-    public Long getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Long total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 }
