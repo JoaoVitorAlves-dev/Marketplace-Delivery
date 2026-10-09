@@ -24,8 +24,8 @@ public class Pedido {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
-    @Column(nullable = false)
-    private Status status = Status.PENDENTE;
+    @Column(name = "status_pedido", nullable = false)
+    private Status statusPedido = Status.PENDENTE;
 
     @Column(nullable = false)
     private BigDecimal total;
@@ -69,12 +69,12 @@ public class Pedido {
         this.endereco = endereco;
     }
 
-    public Status getStatus() {
-        return status;
+    public Status getStatusPedido() {
+        return statusPedido;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusPedido(Status statusPedido) {
+        this.statusPedido = statusPedido;
     }
 
     public BigDecimal getTotal() {
