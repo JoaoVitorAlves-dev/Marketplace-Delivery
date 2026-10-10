@@ -33,40 +33,30 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UsuarioResponse alterRoles(Long id, String role) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não existe."));
-        if (role.equalsIgnoreCase("CLIENTE")) {
-            Role cliente = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
-                Role roleCliente = new Role();
-                roleCliente.setNome("CLIENTE");
-                return roleRepository.save(roleCliente);
-            });
-            usuario.setRole(cliente);
-        } else if (role.equalsIgnoreCase("ADMIN")) {
-            Role admin = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
-                Role roleAdmin = new Role();
-                roleAdmin.setNome("ADMIN");
-                return roleRepository.save(roleAdmin);
-            });
-            usuario.setRole(admin);
-        } else if (role.equalsIgnoreCase("ENTREGADOR")) {
-            Role entregador = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
-                Role roleEntregador = new Role();
-                roleEntregador.setNome("ENTREGADOR");
-                return roleRepository.save(roleEntregador);
-            });
-            usuario.setRole(entregador);
-        } else if (role.equalsIgnoreCase("DONO_RESTAURANTE")) {
-            Role donoRestaurante = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
-                Role roleDonoRestaurante = new Role();
-                roleDonoRestaurante.setNome("DONO_RESTAURANTE");
-                return roleRepository.save(roleDonoRestaurante);
-            });
-            usuario.setRole(donoRestaurante);
+
+    public UsuarioResponse alterRoles(Long id, String nome) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Id não existe."));
+        String nomeRole = nome.toUpperCase();
+
+        if (!nomeRole.equals("CLIENTE") && !nomeRole.equals("ADMIN") && !nomeRole.equals("ENTREGADOR") && !nomeRole.equals("DONO_RESTAURANTE")) {
+            throw new RuntimeException("Role inválida.");
         }
+
+        Role novaRole = roleRepository.findByNome(nomeRole)
+                .orElseGet(() -> {
+                    Role nova = new Role();
+                    nova.setNome(nomeRole);
+                    return roleRepository.save(nova);
+                });
+
+        usuario.setRole(novaRole);
+
         Usuario save = usuarioRepository.save(usuario);
+
         return UsuarioMapper.toDTO(save);
     }
+
 
     public UsuarioResponse cadastrar(UsuarioRequest usuarioRequest) {
         if (usuarioRepository.existsByUsername(usuarioRequest.username())) {

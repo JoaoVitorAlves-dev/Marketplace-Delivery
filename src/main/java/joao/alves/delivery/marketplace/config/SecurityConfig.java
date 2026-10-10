@@ -30,8 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/errors").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios/cadastrar", "/usuarios/login").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/alterar/roles/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/usuarios/listar").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/alterar/roles/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/usuarios/listar").hasAnyRole("ADMIN", "DONO_RESTAURANTE", "ENTREGADOR")
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/deletar/{id}").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

@@ -25,7 +25,7 @@ public class UsuarioController {
 
     @Transactional
     @PutMapping("/alterar/roles/{id}")
-    public ResponseEntity<UsuarioResponse> alterarRole(@NonNull @PathVariable Long id, @NonNull @RequestBody String nome) {
+    public ResponseEntity<UsuarioResponse> alterarRole(@NonNull @PathVariable Long id, @NonNull @Valid @RequestParam String nome) {
         return ResponseEntity.ok(usuarioService.alterRoles(id, nome));
     }
 
