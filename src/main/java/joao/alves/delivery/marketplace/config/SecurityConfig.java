@@ -54,6 +54,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/pagamentos/listar").hasRole("CAIXA")
                         .requestMatchers(HttpMethod.PUT, "/pagamentos/atualizar/{id}").hasRole("CAIXA")
                         .requestMatchers(HttpMethod.DELETE, "/pagamentos/deletar/{id}").hasRole("CAIXA")
+                        .requestMatchers(HttpMethod.POST, "/pratos/cadastrar").hasAnyRole("VENDEDOR", "DONO_RESTAURANTE")
+                        .requestMatchers(HttpMethod.GET, "/pratos/listar").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/pratos/atualizar/{id}").hasAnyRole("VENDEDOR", "DONO_RESTAURANTE")
+                        .requestMatchers(HttpMethod.DELETE, "/pratos/deletar/{id}").hasAnyRole("VENDEDOR", "DONO_RESTAURANTE")
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

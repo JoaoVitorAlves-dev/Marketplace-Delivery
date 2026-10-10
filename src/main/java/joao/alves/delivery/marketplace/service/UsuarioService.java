@@ -40,7 +40,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
         String nomeRole = nome.toUpperCase();
 
-        if (!nomeRole.equals("CLIENTE") && !nomeRole.equals("ADMIN") && !nomeRole.equals("ENTREGADOR") && !nomeRole.equals("DONO_RESTAURANTE") && !nomeRole.equals("CAIXA")) {
+        if (!nomeRole.equals("CLIENTE") && !nomeRole.equals("ADMIN") && !nomeRole.equals("ENTREGADOR") && !nomeRole.equals("DONO_RESTAURANTE") && !nomeRole.equals("CAIXA") && !nomeRole.equals("VENDEDOR")) {
             throw new RuntimeException("Role inválida.");
         }
 
