@@ -21,23 +21,23 @@ public class EnderecoController {
         this.enderecoService = enderecoService;
     }
 
-    @PostMapping("/cadastrar/endereco")
-    public ResponseEntity<EnderecoResponse> cadastrarEndereco(@Valid @NonNull @RequestBody EnderecoRequest enderecoRequest) {
+    @PostMapping("/cadastrar")
+    public ResponseEntity<EnderecoResponse> cadastrarEndereco(@NonNull @Valid @RequestBody EnderecoRequest enderecoRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(enderecoService.cadastrarEndereco(enderecoRequest));
     }
 
-    @GetMapping("/listar/endereco")
+    @GetMapping("/listar")
     public ResponseEntity<Page<EnderecoResponse>> listarEndereco(Pageable pageable) {
         return ResponseEntity.ok(enderecoService.listarEndereco(pageable));
     }
 
-    @PutMapping("/atualizar/endereco/{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<EnderecoResponse> atualizarEndereco(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody EnderecoRequest enderecoRequest) {
         return ResponseEntity.ok(enderecoService.atualizarEndereco(id, enderecoRequest));
     }
 
-    @DeleteMapping("/deletar/endereco/{id}")
-    public ResponseEntity<Void> deletarEndereco(@PathVariable @NonNull Long id) {
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> deletarEndereco(@NonNull @PathVariable Long id) {
         enderecoService.deletarEndereco(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
