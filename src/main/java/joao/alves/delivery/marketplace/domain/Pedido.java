@@ -29,16 +29,18 @@ public class Pedido {
     private Usuario entregador;
 
     @Column(name = "status_pedido", nullable = false)
-    private Status statusPedido = Status.PENDENTE;
+    private Status statusPedido = Status.CARRINHO;
 
     @Column(nullable = false)
     private BigDecimal total;
 
     public enum Status {
-        PENDENTE,
-        EM_ANDAMENTO,
-        CONCLUIDO,
-        CANCELADO
+        CARRINHO,
+        CONFIRMADO,
+        EM_PREPARO,
+        PRONTO,
+        EM_ENTREGA,
+        ENTREGUE
     }
 
     public Long getId() {

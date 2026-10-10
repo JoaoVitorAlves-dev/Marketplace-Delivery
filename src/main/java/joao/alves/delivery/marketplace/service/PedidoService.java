@@ -36,6 +36,9 @@ public class PedidoService {
 
         Pedido entity = PedidoMapper.toEntity(pedidoRequest);
 
+        if (!entity.getStatusPedido().equals(Pedido.Status.PRONTO)) {
+            entity.setEntregador(null);
+        }
         if (!endereco.getUsuario().equals(usuario)) {
             throw new RuntimeException("Usuarios diferentes.");
         }

@@ -22,7 +22,7 @@ public class Pagamento {
     private BigDecimal valor;
 
     @Column(name = "status_pagamento", nullable = false)
-    private StatusPagamento statusPagamento = StatusPagamento.PENDENTE;
+    private StatusPagamento statusPagamento = StatusPagamento.AGUARDANDO;
 
     public enum Forma {
         PIX,
@@ -31,7 +31,7 @@ public class Pagamento {
     }
 
     public enum StatusPagamento {
-        PENDENTE,
+        AGUARDANDO,
         CONCLUIDO,
         CANCELADO,
         EXPIRADO
