@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/usuarios/cadastrar", "/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/usuarios/alterar/roles/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/usuarios/listar").hasAnyRole("ADMIN", "ENTREGADOR")
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/atualizar/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/deletar/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/enderecos/cadastrar").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/enderecos/atualizar/{id}").authenticated()

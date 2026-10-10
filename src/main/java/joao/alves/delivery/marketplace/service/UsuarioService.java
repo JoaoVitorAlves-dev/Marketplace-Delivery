@@ -93,17 +93,22 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponse atualizarUsuario(Long id, UsuarioRequest usuarioRequest) {
-        usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
+    public UsuarioResponse atualizarUsuario(Long id, UsuarioRequest usuarioRequest, String usernameAutenticado) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
 
-        if (usuarioRepository.existsByUsername(usuarioRequest.username())) {
+        if (!usuario.getUsername().equals(usernameAutenticado)) {
+            throw new RuntimeException("Você so pode alterar sua propria conta.");
+        }
+
+        if (usuarioRepository.existsByUsernameAndIdNot(usuarioRequest.username(), id)) {
             throw new RuntimeException("Username já existe.");
         }
 
-        Usuario entity = UsuarioMapper.toEntity(usuarioRequest);
-        entity.setId(id);
-        entity.setPassword(passwordEncoder.encode(usuarioRequest.password()));
-        Usuario save = usuarioRepository.save(entity);
+        usuario.setUsername(usuarioRequest.username());
+        usuario.setPassword(passwordEncoder.encode(usuarioRequest.password()));
+
+        Usuario save = usuarioRepository.save(usuario);
+
         return UsuarioMapper.toDTO(save);
     }
 

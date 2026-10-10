@@ -17,4 +17,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsername(String username);
 
     Page<UsuarioResponse> findAllBy(Pageable pageable);
+
+    boolean existsByUsernameAndIdNot(String username, Long id);
 }

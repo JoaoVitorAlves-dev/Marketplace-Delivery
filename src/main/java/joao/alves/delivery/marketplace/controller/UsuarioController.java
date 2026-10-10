@@ -1,7 +1,7 @@
 package joao.alves.delivery.marketplace.controller;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import joao.alves.delivery.marketplace.config.TokenService;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
 import joao.alves.delivery.marketplace.dto.request.UsuarioRequest;
 import joao.alves.delivery.marketplace.dto.response.UsuarioResponse;
@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final TokenService tokenService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, TokenService tokenService) {
         this.usuarioService = usuarioService;
+        this.tokenService = tokenService;
     }
 
     @PutMapping("/alterar/roles/{id}")
@@ -41,6 +43,14 @@ public class UsuarioController {
     @GetMapping("/listar")
     public ResponseEntity<Page<UsuarioResponse>> listar(Pageable pageable) {
         return ResponseEntity.ok(usuarioService.listar(pageable));
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<UsuarioResponse> atualizarUsuario(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody UsuarioRequest usuarioRequest, @RequestHeader("Authorization") String authorization) {
+        String token = authorization.replace("Bearer ", "");
+        String username = tokenService.validarToken(token);
+
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, usuarioRequest, username));
     }
 
     @DeleteMapping("/deletar/{id}")
