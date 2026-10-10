@@ -14,6 +14,9 @@ public class Categoria {
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
+    @OneToMany(mappedBy = "prato_id", fetch = FetchType.EAGER)
+    private Prato prato;
+
     @Column(nullable = false)
     private String nome;
 
@@ -31,6 +34,14 @@ public class Categoria {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+    }
+
+    public Prato getPrato() {
+        return prato;
+    }
+
+    public void setPrato(Prato prato) {
+        this.prato = prato;
     }
 
     public String getNome() {

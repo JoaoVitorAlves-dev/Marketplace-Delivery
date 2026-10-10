@@ -1,6 +1,7 @@
 package joao.alves.delivery.marketplace.service;
 
 import joao.alves.delivery.marketplace.domain.Categoria;
+import joao.alves.delivery.marketplace.domain.Prato;
 import joao.alves.delivery.marketplace.dto.request.CategoriaRequest;
 import joao.alves.delivery.marketplace.dto.response.CategoriaResponse;
 import joao.alves.delivery.marketplace.mapper.CategoriaMapper;
@@ -42,6 +43,10 @@ public class CategoriaService {
     }
 
     public void deletarCategoria(Long id) {
+        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+        if (categoria.getPrato().getDisponivel().equals(Prato.Disponivel.DISPONIVEL)) {
+            throw new RuntimeException("PRATO DISPONIVEL AINDA.");
+        }
         categoriaRepository.deleteById(id);
     }
 }

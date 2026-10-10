@@ -20,7 +20,7 @@ public class CategoriaMapper {
 
     public CategoriaResponse toDTO(Categoria categoria) {
         return new CategoriaResponse(
-                categoria.getId(), categoria.getRestaurante().getId(), categoria.getNome()
+                categoria.getId(), categoria.getRestaurante().getId(), categoria.getPrato().getId(), categoria.getNome()
         );
     }
 
