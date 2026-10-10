@@ -52,6 +52,7 @@ public class PedidoService {
     public PedidoResponse atualizar(Long id, PedidoRequest pedidoRequest) {
         pedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
         Pedido entity = PedidoMapper.toEntity(pedidoRequest);
+        entity.setStatusPedido(pedidoRequest.statusPedido());
         entity.setId(id);
         Pedido save = pedidoRepository.save(entity);
         return PedidoMapper.toDTO(save);

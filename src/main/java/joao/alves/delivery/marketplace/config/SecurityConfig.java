@@ -46,6 +46,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/itempedidos/listar").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/itempedidos/atualizar/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/itempedidos/deletar/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/pedidos/cadastrar").hasRole("ENTREGADOR")
+                        .requestMatchers(HttpMethod.GET, "/pedidos/listar").hasRole("ENTREGADOR")
+                        .requestMatchers(HttpMethod.PUT, "/pedidos/atualizar/{id}").hasRole("ENTREGADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/pedidos/deletar/{id}").hasRole("ENTREGADOR")
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
