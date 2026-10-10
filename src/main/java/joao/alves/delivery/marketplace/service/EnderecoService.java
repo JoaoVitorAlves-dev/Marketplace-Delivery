@@ -46,7 +46,6 @@ public class EnderecoService {
 
     @Transactional
     public void deletarEndereco(Long id) {
-        enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não encontrado"));
         enderecoRepository.deleteById(id);
     }
 

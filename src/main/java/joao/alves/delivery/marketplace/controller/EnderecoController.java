@@ -37,7 +37,7 @@ public class EnderecoController {
     }
 
     @DeleteMapping("/deletar/endereco/{id}")
-    public ResponseEntity<Void> deletarEndereco(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarEndereco(@PathVariable @NonNull Long id) {
         enderecoService.deletarEndereco(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
