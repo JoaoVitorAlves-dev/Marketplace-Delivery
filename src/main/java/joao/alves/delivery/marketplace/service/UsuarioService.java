@@ -1,5 +1,6 @@
 package joao.alves.delivery.marketplace.service;
 
+import jakarta.transaction.Transactional;
 import joao.alves.delivery.marketplace.config.TokenService;
 import joao.alves.delivery.marketplace.domain.Role;
 import joao.alves.delivery.marketplace.domain.Usuario;
@@ -34,6 +35,7 @@ public class UsuarioService {
     }
 
 
+    @Transactional
     public UsuarioResponse alterRoles(Long id, String nome) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Id não existe."));
@@ -57,7 +59,7 @@ public class UsuarioService {
         return UsuarioMapper.toDTO(save);
     }
 
-
+    @Transactional
     public UsuarioResponse cadastrar(UsuarioRequest usuarioRequest) {
         if (usuarioRepository.existsByUsername(usuarioRequest.username())) {
             throw new RuntimeException("Username já existe.");
@@ -77,6 +79,7 @@ public class UsuarioService {
         return UsuarioMapper.toDTO(save);
     }
 
+    @Transactional
     public String login(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -94,6 +97,7 @@ public class UsuarioService {
         return usuarioRepository.findAllBy(pageable);
     }
 
+    @Transactional
     public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }

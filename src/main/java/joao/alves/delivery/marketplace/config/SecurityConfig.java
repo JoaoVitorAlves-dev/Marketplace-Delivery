@@ -31,8 +31,12 @@ public class SecurityConfig {
                         .requestMatchers("/", "/errors").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios/cadastrar", "/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/usuarios/alterar/roles/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/usuarios/listar").hasAnyRole("ADMIN", "DONO_RESTAURANTE", "ENTREGADOR")
+                        .requestMatchers(HttpMethod.GET, "/usuarios/listar").hasAnyRole("ADMIN", "ENTREGADOR")
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/deletar/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/enderecos/cadastrar/endereco").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/enderecos/atualizar/endereco/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "enderecos/listar/endereco").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "enderecos/deletar/endereco/{id}").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

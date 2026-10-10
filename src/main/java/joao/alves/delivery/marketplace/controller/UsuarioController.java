@@ -23,19 +23,16 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @Transactional
     @PutMapping("/alterar/roles/{id}")
     public ResponseEntity<UsuarioResponse> alterarRole(@NonNull @PathVariable Long id, @NonNull @Valid @RequestParam String nome) {
         return ResponseEntity.ok(usuarioService.alterRoles(id, nome));
     }
 
-    @Transactional
     @PostMapping("/cadastrar")
     public ResponseEntity<UsuarioResponse> cadastrar(@NonNull @Valid @RequestBody UsuarioRequest usuarioRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(usuarioRequest));
     }
 
-    @Transactional
     @PostMapping("/login")
     public ResponseEntity<String> login(@NonNull @Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(usuarioService.login(loginRequest));
@@ -46,7 +43,6 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.listar(pageable));
     }
 
-    @Transactional
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletar(@NonNull @PathVariable Long id) {
         usuarioService.deletar(id);
