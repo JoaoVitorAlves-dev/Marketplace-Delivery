@@ -42,7 +42,7 @@ public class UsuarioController {
 
     @Transactional
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletar(@NonNull Long id) {
+    public ResponseEntity<Void> deletar(@NonNull @PathVariable Long id) {
         usuarioService.deletar(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

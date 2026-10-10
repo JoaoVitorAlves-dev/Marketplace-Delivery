@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,23 +44,36 @@ public class UsuarioService {
         Role role = roleRepository.findByNome("USER").orElseGet(() -> {
             Role roleUser = new Role();
             roleUser.setNome("USER");
-            return roleUser;
+            return roleRepository.save(roleUser);
         });
 
-        entity.setRole(role);
+        Role admin = roleRepository.findByNome("ADMIN").orElseGet(() -> {
+            Role roleAdmin = new Role();
+            roleAdmin.setNome("ADMIN");
+            return roleRepository.save(roleAdmin);
+        });
+
+        if (entity.getUsername().equals("admin")) {
+            entity.setRole(admin);
+        } else {
+            entity.setRole(role);
+        }
 
         Usuario save = usuarioRepository.save(entity);
         return UsuarioMapper.toDTO(save);
     }
 
     public String login(LoginRequest loginRequest) {
-        Usuario usuario = usuarioRepository.findByUsername(loginRequest.username())
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        return tokenService.gerarToken(usuario.getUsername());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.username(),
+                        loginRequest.password()
+                );
+
+        authenticationManager.authenticate(authenticationToken);
+
+        return tokenService.gerarToken(loginRequest.username());
     }
 
     public Page<UsuarioResponse> listar(Pageable pageable) {
