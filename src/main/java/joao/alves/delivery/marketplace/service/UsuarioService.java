@@ -33,6 +33,41 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public UsuarioResponse setRoles(Long id, String role) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não existe."));
+        if (role.equalsIgnoreCase("CLIENTE")) {
+            Role cliente = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
+                Role roleCliente = new Role();
+                roleCliente.setNome("CLIENTE");
+                return roleRepository.save(roleCliente);
+            });
+            usuario.setRole(cliente);
+        } else if (role.equalsIgnoreCase("ADMIN")) {
+            Role admin = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
+                Role roleAdmin = new Role();
+                roleAdmin.setNome("ADMIN");
+                return roleRepository.save(roleAdmin);
+            });
+            usuario.setRole(admin);
+        } else if (role.equalsIgnoreCase("ENTREGADOR")) {
+            Role entregador = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
+                Role roleEntregador = new Role();
+                roleEntregador.setNome("ENTREGADOR");
+                return roleRepository.save(roleEntregador);
+            });
+            usuario.setRole(entregador);
+        } else if (role.equalsIgnoreCase("DONO_RESTAURANTE")) {
+            Role donoRestaurante = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
+                Role roleDonoRestaurante = new Role();
+                roleDonoRestaurante.setNome("DONO_RESTAURANTE");
+                return roleRepository.save(roleDonoRestaurante);
+            });
+            usuario.setRole(donoRestaurante);
+        }
+        Usuario save = usuarioRepository.save(usuario);
+        return UsuarioMapper.toDTO(save);
+    }
+
     public UsuarioResponse cadastrar(UsuarioRequest usuarioRequest) {
         if (usuarioRepository.existsByUsername(usuarioRequest.username())) {
             throw new RuntimeException("Username já existe.");
@@ -42,21 +77,9 @@ public class UsuarioService {
         entity.setPassword(passwordEncoder.encode(usuarioRequest.password()));
 
         Role cliente = roleRepository.findByNome("CLIENTE").orElseGet(() -> {
-            Role roleUser = new Role();
-            roleUser.setNome("CLIENTE");
-            return roleRepository.save(roleUser);
-        });
-
-        Role donoRestaurante = roleRepository.findByNome("DONO_RESTAURANTE").orElseGet(() -> {
-            Role roleUser = new Role();
-            roleUser.setNome("DONO_RESTAURANTE");
-            return roleRepository.save(roleUser);
-        });
-
-        Role admin = roleRepository.findByNome("ADMIN").orElseGet(() -> {
-            Role roleUser = new Role();
-            roleUser.setNome("ADMIN");
-            return roleRepository.save(roleUser);
+            Role roleCliente = new Role();
+            roleCliente.setNome("CLIENTE");
+            return roleRepository.save(roleCliente);
         });
 
         entity.setRole(cliente);
