@@ -41,24 +41,25 @@ public class UsuarioService {
         Usuario entity = UsuarioMapper.toEntity(usuarioRequest);
         entity.setPassword(passwordEncoder.encode(usuarioRequest.password()));
 
-        Role role = roleRepository.findByNome("USER").orElseGet(() -> {
+        Role cliente = roleRepository.findByNome("CLIENTE").orElseGet(() -> {
             Role roleUser = new Role();
-            roleUser.setNome("USER");
+            roleUser.setNome("CLIENTE");
+            return roleRepository.save(roleUser);
+        });
+
+        Role donoRestaurante = roleRepository.findByNome("DONO_RESTAURANTE").orElseGet(() -> {
+            Role roleUser = new Role();
+            roleUser.setNome("DONO_RESTAURANTE");
             return roleRepository.save(roleUser);
         });
 
         Role admin = roleRepository.findByNome("ADMIN").orElseGet(() -> {
-            Role roleAdmin = new Role();
-            roleAdmin.setNome("ADMIN");
-            return roleRepository.save(roleAdmin);
+            Role roleUser = new Role();
+            roleUser.setNome("ADMIN");
+            return roleRepository.save(roleUser);
         });
 
-        if (entity.getUsername().equals("admin")) {
-            entity.setRole(admin);
-        } else {
-            entity.setRole(role);
-        }
-
+        entity.setRole(cliente);
         Usuario save = usuarioRepository.save(entity);
         return UsuarioMapper.toDTO(save);
     }

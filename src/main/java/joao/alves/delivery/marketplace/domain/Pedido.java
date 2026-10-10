@@ -24,6 +24,10 @@ public class Pedido {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "entregador_id")
+    private Usuario entregador;
+
     @Column(name = "status_pedido", nullable = false)
     private Status statusPedido = Status.PENDENTE;
 
