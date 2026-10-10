@@ -34,11 +34,10 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Transactional
     public UsuarioResponse alterRoles(Long id, String nome) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Id não existe."));
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
         String nomeRole = nome.toUpperCase();
 
         if (!nomeRole.equals("CLIENTE") && !nomeRole.equals("ADMIN") && !nomeRole.equals("ENTREGADOR") && !nomeRole.equals("DONO_RESTAURANTE")) {
@@ -91,6 +90,21 @@ public class UsuarioService {
         authenticationManager.authenticate(authenticationToken);
 
         return tokenService.gerarToken(loginRequest.username());
+    }
+
+    @Transactional
+    public UsuarioResponse atualizarUsuario(Long id, UsuarioRequest usuarioRequest) {
+        usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario não encontrado."));
+
+        if (usuarioRepository.existsByUsername(usuarioRequest.username())) {
+            throw new RuntimeException("Username já existe.");
+        }
+
+        Usuario entity = UsuarioMapper.toEntity(usuarioRequest);
+        entity.setId(id);
+        entity.setPassword(passwordEncoder.encode(usuarioRequest.password()));
+        Usuario save = usuarioRepository.save(entity);
+        return UsuarioMapper.toDTO(save);
     }
 
     public Page<UsuarioResponse> listar(Pageable pageable) {
