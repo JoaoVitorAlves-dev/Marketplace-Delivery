@@ -73,6 +73,14 @@ public class Pedido {
         this.endereco = endereco;
     }
 
+    public Usuario getEntregador() {
+        return entregador;
+    }
+
+    public void setEntregador(Usuario entregador) {
+        this.entregador = entregador;
+    }
+
     public Status getStatusPedido() {
         return statusPedido;
     }

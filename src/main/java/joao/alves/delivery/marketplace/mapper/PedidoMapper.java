@@ -23,9 +23,13 @@ public class PedidoMapper {
         Endereco endereco = new Endereco();
         endereco.setId(pedidoRequest.enderecoId());
 
+        Usuario entregador = new Usuario();
+        entregador.setId(pedidoRequest.entregadorId());
+
         pedido.setUsuario(usuario);
         pedido.setRestaurante(restaurante);
         pedido.setEndereco(endereco);
+        pedido.setEntregador(entregador);
         pedido.setStatusPedido(pedidoRequest.statusPedido());
         pedido.setTotal(pedidoRequest.total());
         return pedido;
@@ -34,7 +38,7 @@ public class PedidoMapper {
     public PedidoResponse toDTO(Pedido pedido) {
         return new PedidoResponse(
                 pedido.getId(), pedido.getUsuario().getId(), pedido.getRestaurante().getId(), pedido.getEndereco().getId(),
-                pedido.getStatusPedido(), pedido.getTotal()
+                pedido.getEntregador().getId(), pedido.getStatusPedido(), pedido.getTotal()
         );
     }
 

@@ -8,6 +8,7 @@ public record PedidoRequest(
         Long usuarioId,
         Long restauranteId,
         Long enderecoId,
+        Long entregadorId,
         Pedido.Status statusPedido,
         BigDecimal total
 ) {
