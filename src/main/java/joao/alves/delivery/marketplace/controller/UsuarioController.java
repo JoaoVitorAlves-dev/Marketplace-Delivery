@@ -24,6 +24,12 @@ public class UsuarioController {
     }
 
     @Transactional
+    @PutMapping("/alterar/roles/{id}")
+    public ResponseEntity<UsuarioResponse> alterarRole(@NonNull @PathVariable Long id, @NonNull @RequestBody String nome) {
+        return ResponseEntity.ok(usuarioService.alterRoles(id, nome));
+    }
+
+    @Transactional
     @PostMapping("/cadastrar")
     public ResponseEntity<UsuarioResponse> cadastrar(@NonNull @Valid @RequestBody UsuarioRequest usuarioRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(usuarioRequest));

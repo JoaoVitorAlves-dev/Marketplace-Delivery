@@ -30,11 +30,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/errors").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios/cadastrar", "/usuarios/login").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/alterar/roles/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/usuarios/listar").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/deletar/{id}").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

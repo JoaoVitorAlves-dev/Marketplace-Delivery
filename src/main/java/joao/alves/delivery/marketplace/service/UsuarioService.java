@@ -33,7 +33,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UsuarioResponse setRoles(Long id, String role) {
+    public UsuarioResponse alterRoles(Long id, String role) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não existe."));
         if (role.equalsIgnoreCase("CLIENTE")) {
             Role cliente = roleRepository.findByNome(role.toUpperCase()).orElseGet(() -> {
