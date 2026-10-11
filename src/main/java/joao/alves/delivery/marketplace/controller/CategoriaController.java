@@ -22,7 +22,7 @@ public class CategoriaController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<CategoriaResponse> cadastrarCategoria(@NonNull @Valid @RequestBody CategoriaRequest categoriaRequest) {
+    public ResponseEntity<CategoriaResponse> cadastrarCategoria(@Valid @RequestBody CategoriaRequest categoriaRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.cadastrarCategoria(categoriaRequest));
     }
 
@@ -32,12 +32,12 @@ public class CategoriaController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<CategoriaResponse> atualizarCategoria(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody CategoriaRequest categoriaRequest) {
+    public ResponseEntity<CategoriaResponse> atualizarCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaRequest categoriaRequest) {
         return ResponseEntity.ok(categoriaService.atualizarCategoria(id, categoriaRequest));
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletar(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         categoriaService.deletarCategoria(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

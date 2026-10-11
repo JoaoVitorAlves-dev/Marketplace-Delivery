@@ -1,7 +1,10 @@
 package joao.alves.delivery.marketplace.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record RestauranteRequest(
-        Long usuarioId,
-        String nome
+        @NotNull Long usuarioId,
+        @NotBlank String nome
 ) {
 }

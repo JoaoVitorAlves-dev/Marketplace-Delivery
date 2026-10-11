@@ -1,9 +1,11 @@
 package joao.alves.delivery.marketplace.service;
 
+import jakarta.transaction.Transactional;
 import joao.alves.delivery.marketplace.domain.ItemPedido;
 import joao.alves.delivery.marketplace.domain.Pedido;
 import joao.alves.delivery.marketplace.domain.Prato;
 import joao.alves.delivery.marketplace.dto.request.ItemPedidoRequest;
+import joao.alves.delivery.marketplace.dto.request.ItemPedidoUpdateRequest;
 import joao.alves.delivery.marketplace.dto.response.ItemPedidoResponse;
 import joao.alves.delivery.marketplace.mapper.ItemPedidoMapper;
 import joao.alves.delivery.marketplace.repository.ItemPedidoRepository;
@@ -29,34 +31,66 @@ public class ItemPedidoService {
     }
 
     public ItemPedidoResponse cadastrar(ItemPedidoRequest itemPedidoRequest) {
-        Pedido pedido = pedidoRepository.findById(itemPedidoRequest.pedidoId()).orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
-        Prato prato = pratoRepository.findById(itemPedidoRequest.pratoId()).orElseThrow(() -> new RuntimeException("Prato não encontrado."));
-        ItemPedido entity = ItemPedidoMapper.toEntity(itemPedidoRequest);
+        Pedido pedido = pedidoRepository.findById(itemPedidoRequest.pedidoId())
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
+        Prato prato = pratoRepository.findById(itemPedidoRequest.pratoId())
+                .orElseThrow(() -> new RuntimeException("Prato não encontrado."));
 
-        if (!pedido.getStatusPedido().equals(Pedido.Status.CONFIRMADO) && prato.getDisponivel().equals(Prato.Disponivel.DISPONIVEL) ) {
+        exigirCarrinho(pedido);
+
+        if (prato.getDisponivel() == Prato.Disponivel.INDISPONIVEL) {
             throw new RuntimeException("Prato indisponivel.");
         }
+        if (!prato.getCategoria().getRestaurante().getId().equals(pedido.getRestaurante().getId())) {
+            throw new RuntimeException("O prato não pertence ao restaurante do pedido.");
+        }
 
+        ItemPedido item = new ItemPedido();
+        item.setPedido(pedido);
+        item.setPrato(prato);
+        item.setQuantidade(itemPedidoRequest.quantidade());
+        item.setPrecoUnitario(prato.getPreco());
 
-        pedido.setTotal(itemPedidoRequest.precoUnitario().multiply(BigDecimal.valueOf(itemPedidoRequest.quantidade())));
-        pedidoRepository.save(pedido);
-        ItemPedido save = itemPedidoRepository.save(entity);
+        ItemPedido save = itemPedidoRepository.save(item);
+        recalcularTotal(pedido);
         return ItemPedidoMapper.toDTO(save);
     }
 
+    @Transactional
     public Page<ItemPedidoResponse> listar(Pageable pageable) {
         return itemPedidoRepository.findAllBy(pageable);
     }
 
-    public ItemPedidoResponse atualizar(Long id, ItemPedidoRequest itemPedidoRequest) {
-        itemPedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não encontrado."));
-        ItemPedido entity = ItemPedidoMapper.toEntity(itemPedidoRequest);
-        ItemPedido save = itemPedidoRepository.save(entity);
+    @Transactional
+    public ItemPedidoResponse atualizar(Long id, ItemPedidoUpdateRequest itemPedidoRequest) {
+        ItemPedido item = itemPedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Id não encontrado."));
+        exigirCarrinho(item.getPedido());
+
+        item.setQuantidade(itemPedidoRequest.quantidade());
+        ItemPedido save = itemPedidoRepository.save(item);
+        recalcularTotal(item.getPedido());
         return ItemPedidoMapper.toDTO(save);
     }
 
+    @Transactional
     public void deletar(Long id) {
-        itemPedidoRepository.deleteById(id);
+        ItemPedido item = itemPedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item não encontrado"));
+        exigirCarrinho(item.getPedido());
+
+        itemPedidoRepository.delete(item);
+        recalcularTotal(item.getPedido());
     }
 
+    private void exigirCarrinho(Pedido pedido) {
+        if (pedido.getStatusPedido() != Pedido.Status.CARRINHO) {
+            throw new RuntimeException("Só é possível alterar itens de um pedido em carrinho.");
+        }
+    }
+
+    private void recalcularTotal(Pedido pedido) {
+        BigDecimal total = itemPedidoRepository.somarTotalPorPedido(pedido.getId());
+        pedido.setTotal(total != null ? total : BigDecimal.ZERO);
+        pedidoRepository.save(pedido);
+    }
 }

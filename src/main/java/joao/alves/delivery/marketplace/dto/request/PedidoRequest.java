@@ -1,15 +1,10 @@
 package joao.alves.delivery.marketplace.dto.request;
 
-import joao.alves.delivery.marketplace.domain.Pedido;
-
-import java.math.BigDecimal;
+import jakarta.validation.constraints.NotNull;
 
 public record PedidoRequest(
-        Long usuarioId,
-        Long restauranteId,
-        Long enderecoId,
-        Long entregadorId,
-        Pedido.Status statusPedido,
-        BigDecimal total
+        @NotNull Long usuarioId,
+        @NotNull Long restauranteId,
+        @NotNull Long enderecoId
 ) {
 }

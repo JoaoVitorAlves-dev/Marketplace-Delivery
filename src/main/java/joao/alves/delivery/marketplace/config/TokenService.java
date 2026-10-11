@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -14,15 +15,18 @@ public class TokenService {
     @Value("${secret.api.key.marketplace}")
     private String secret;
 
+    @Value("${api.token.expiration-ms:3600000}")
+    private Long expirationMs;
+
     public SecretKey getChave() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String gerarToken(String username) {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 3_600_000))
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getChave())
                 .compact();
     }

@@ -1,9 +1,11 @@
 package joao.alves.delivery.marketplace.dto.response;
 
+import java.util.Set;
+
 public record CategoriaResponse(
         Long id,
         Long restauranteId,
-        Long pratoId,
+        Set<Long> pratoId,
         String nome
 ) {
 }

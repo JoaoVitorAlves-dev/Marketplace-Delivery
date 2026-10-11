@@ -2,6 +2,7 @@ package joao.alves.delivery.marketplace.controller;
 
 import jakarta.validation.Valid;
 import joao.alves.delivery.marketplace.dto.request.ItemPedidoRequest;
+import joao.alves.delivery.marketplace.dto.request.ItemPedidoUpdateRequest;
 import joao.alves.delivery.marketplace.dto.response.ItemPedidoResponse;
 import joao.alves.delivery.marketplace.service.ItemPedidoService;
 import org.jspecify.annotations.NonNull;
@@ -22,7 +23,7 @@ public class ItemPedidoController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ItemPedidoResponse> cadastrar(@NonNull @Valid @RequestBody ItemPedidoRequest itemPedidoRequest) {
+    public ResponseEntity<ItemPedidoResponse> cadastrar(@Valid @RequestBody ItemPedidoRequest itemPedidoRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemPedidoService.cadastrar(itemPedidoRequest));
     }
 
@@ -32,12 +33,12 @@ public class ItemPedidoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<ItemPedidoResponse> atualizar(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody ItemPedidoRequest itemPedidoRequest) {
-        return ResponseEntity.ok(itemPedidoService.atualizar(id, itemPedidoRequest));
+    public ResponseEntity<ItemPedidoResponse> atualizar(@PathVariable Long id, @Valid @RequestBody ItemPedidoUpdateRequest request) {
+        return ResponseEntity.ok(itemPedidoService.atualizar(id, request));
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletar(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         itemPedidoService.deletar(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

@@ -1,11 +1,11 @@
 package joao.alves.delivery.marketplace.dto.request;
 
-import java.math.BigDecimal;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record ItemPedidoRequest(
-        Long pedidoId,
-        Long pratoId,
-        Long quantidade,
-        BigDecimal precoUnitario
+        @NotNull Long pedidoId,
+        @NotNull Long pratoId,
+        @NotNull @Positive Long quantidade
 ) {
 }

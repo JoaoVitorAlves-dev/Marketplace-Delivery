@@ -1,11 +1,12 @@
 package joao.alves.delivery.marketplace.service;
 
 import joao.alves.delivery.marketplace.domain.Categoria;
-import joao.alves.delivery.marketplace.domain.Prato;
+import joao.alves.delivery.marketplace.domain.Restaurante;
 import joao.alves.delivery.marketplace.dto.request.CategoriaRequest;
 import joao.alves.delivery.marketplace.dto.response.CategoriaResponse;
 import joao.alves.delivery.marketplace.mapper.CategoriaMapper;
 import joao.alves.delivery.marketplace.repository.CategoriaRepository;
+import joao.alves.delivery.marketplace.repository.PratoRepository;
 import joao.alves.delivery.marketplace.repository.RestauranteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,18 +36,17 @@ public class CategoriaService {
     }
 
     public CategoriaResponse atualizarCategoria(Long id, CategoriaRequest categoriaRequest) {
-        categoriaRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
-        Categoria entity = CategoriaMapper.toEntity(categoriaRequest);
-        entity.setId(id);
-        Categoria save = categoriaRepository.save(entity);
-        return CategoriaMapper.toDTO(save);
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+
+        Restaurante restaurante = restauranteRepository.findById(categoriaRequest.restauranteId())
+                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado."));
+        categoria.setRestaurante(restaurante);
+        categoria.setNome(categoriaRequest.nome());
+        return CategoriaMapper.toDTO(categoriaRepository.save(categoria));
     }
 
     public void deletarCategoria(Long id) {
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
-        if (categoria.getPrato().getDisponivel().equals(Prato.Disponivel.DISPONIVEL)) {
-            throw new RuntimeException("PRATO DISPONIVEL AINDA.");
-        }
         categoriaRepository.deleteById(id);
     }
 }

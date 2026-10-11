@@ -22,7 +22,7 @@ public class EnderecoController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<EnderecoResponse> cadastrarEndereco(@NonNull @Valid @RequestBody EnderecoRequest enderecoRequest) {
+    public ResponseEntity<EnderecoResponse> cadastrarEndereco(@Valid @RequestBody EnderecoRequest enderecoRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(enderecoService.cadastrarEndereco(enderecoRequest));
     }
 
@@ -32,12 +32,12 @@ public class EnderecoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<EnderecoResponse> atualizarEndereco(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody EnderecoRequest enderecoRequest) {
+    public ResponseEntity<EnderecoResponse> atualizarEndereco(@PathVariable Long id, @Valid @RequestBody EnderecoRequest enderecoRequest) {
         return ResponseEntity.ok(enderecoService.atualizarEndereco(id, enderecoRequest));
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarEndereco(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> deletarEndereco(@PathVariable Long id) {
         enderecoService.deletarEndereco(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

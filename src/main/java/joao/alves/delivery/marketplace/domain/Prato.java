@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "tb_pratos")
+@Table(name = "tb_pratos", uniqueConstraints = @UniqueConstraint(columnNames = {"categoria_id", "nome"}))
 public class Prato {
 
     @Id
@@ -16,12 +16,13 @@ public class Prato {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false)
     private BigDecimal preco;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Disponivel disponivel;
 

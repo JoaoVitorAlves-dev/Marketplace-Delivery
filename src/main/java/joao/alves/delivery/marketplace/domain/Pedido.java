@@ -28,11 +28,12 @@ public class Pedido {
     @JoinColumn(name = "entregador_id")
     private Usuario entregador;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_pedido", nullable = false)
     private Status statusPedido = Status.CARRINHO;
 
     @Column(nullable = false)
-    private BigDecimal total;
+    private BigDecimal total = BigDecimal.ZERO;
 
     public enum Status {
         CARRINHO,

@@ -23,8 +23,8 @@ public class Endereco {
     @Column(nullable = false)
     private String estado;
 
-    @Column(nullable = false)
-    private Long cep;
+    @Column(nullable = false, length = 8)
+    private String cep;
 
     public Long getId() {
         return id;
@@ -66,11 +66,11 @@ public class Endereco {
         this.estado = estado;
     }
 
-    public Long getCep() {
+    public String getCep() {
         return cep;
     }
 
-    public void setCep(Long cep) {
+    public void setCep(String cep) {
         this.cep = cep;
     }
 }

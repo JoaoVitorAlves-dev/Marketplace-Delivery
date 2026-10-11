@@ -17,7 +17,7 @@ public class ItemPedidoMapper {
         pedido.setId(itemPedidoRequest.pedidoId());
 
         Prato prato = new Prato();
-        prato.setId(itemPedidoRequest.pedidoId());
+        prato.setId(itemPedidoRequest.pratoId());
 
         itemPedido.setPedido(pedido);
         itemPedido.setPrato(prato);

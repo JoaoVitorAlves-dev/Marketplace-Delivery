@@ -23,7 +23,7 @@ public class UsuarioDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
-        System.out.println("Role do banco: " + usuario.getRole().getNome());
+
         return User.builder()
                 .username(usuario.getUsername())
                 .password(usuario.getPassword())

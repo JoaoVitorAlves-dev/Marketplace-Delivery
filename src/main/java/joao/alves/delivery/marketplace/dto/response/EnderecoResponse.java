@@ -6,6 +6,6 @@ public record EnderecoResponse(
         String rua,
         String cidade,
         String estado,
-        Long cep
+        String cep
 ) {
 }

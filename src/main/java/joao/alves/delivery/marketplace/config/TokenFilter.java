@@ -1,5 +1,6 @@
 package joao.alves.delivery.marketplace.config;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -40,12 +42,14 @@ public class TokenFilter extends OncePerRequestFilter {
         String token = extrairToken(request);
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String username = tokenService.validarToken(token);
-            UserDetails usuario = usuarioDetailsService.loadUserByUsername(username);
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Authorities: " + usuario.getAuthorities());
+            try {
+                String username = tokenService.validarToken(token);
+                UserDetails usuario = usuarioDetailsService.loadUserByUsername(username);
+                SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
+            } catch (JwtException | IllegalArgumentException | UsernameNotFoundException e) {
+                SecurityContextHolder.clearContext();
+            }
         }
         filterChain.doFilter(request, response);
     }

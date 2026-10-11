@@ -15,12 +15,14 @@ public class Pagamento {
     @ManyToOne(fetch = FetchType.EAGER)
     private Pedido pedido;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento", nullable = false)
     private Forma formaPagamento;
 
     @Column(nullable = false)
     private BigDecimal valor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_pagamento", nullable = false)
     private StatusPagamento statusPagamento = StatusPagamento.AGUARDANDO;
 

@@ -22,7 +22,7 @@ public class PagamentoController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<PagamentoResponse> cadastrar(@NonNull @Valid @RequestBody PagamentoRequest pagamentoRequest) {
+    public ResponseEntity<PagamentoResponse> cadastrar(@Valid @RequestBody PagamentoRequest pagamentoRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoService.cadastrar(pagamentoRequest));
     }
 
@@ -32,12 +32,12 @@ public class PagamentoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<PagamentoResponse> atualizar(@NonNull @PathVariable Long id, @NonNull @Valid @RequestBody PagamentoRequest pagamentoRequest) {
+    public ResponseEntity<PagamentoResponse> atualizar(@PathVariable Long id, @Valid @RequestBody PagamentoRequest pagamentoRequest) {
         return ResponseEntity.ok(pagamentoService.atualizar(id, pagamentoRequest));
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletar(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         pagamentoService.deletar(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

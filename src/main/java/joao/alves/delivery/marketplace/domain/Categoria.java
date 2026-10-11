@@ -2,6 +2,9 @@ package joao.alves.delivery.marketplace.domain;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "tb_categorias")
 public class Categoria {
@@ -14,8 +17,8 @@ public class Categoria {
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
-    @OneToMany(mappedBy = "prato_id", fetch = FetchType.EAGER)
-    private Prato prato;
+    @OneToMany(mappedBy = "categoria")
+    private Set<Prato> prato = new HashSet<>();
 
     @Column(nullable = false)
     private String nome;
@@ -36,11 +39,11 @@ public class Categoria {
         this.restaurante = restaurante;
     }
 
-    public Prato getPrato() {
+    public Set<Prato> getPrato() {
         return prato;
     }
 
-    public void setPrato(Prato prato) {
+    public void setPrato(Set<Prato> prato) {
         this.prato = prato;
     }
 
