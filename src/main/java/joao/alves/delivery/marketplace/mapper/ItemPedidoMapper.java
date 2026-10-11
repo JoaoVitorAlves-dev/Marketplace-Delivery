@@ -22,7 +22,6 @@ public class ItemPedidoMapper {
         itemPedido.setPedido(pedido);
         itemPedido.setPrato(prato);
         itemPedido.setQuantidade(itemPedidoRequest.quantidade());
-        itemPedido.setPrecoUnitario(itemPedidoRequest.precoUnitario());
         return itemPedido;
     }
 
