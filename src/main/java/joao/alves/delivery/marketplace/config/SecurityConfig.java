@@ -29,10 +29,10 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/error").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuarios/cadastrar", "/usuarios/login").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/usuarios/alterar/roles/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/usuarios/listar").hasAnyRole("ADMIN", "ENTREGADOR")
-                        .requestMatchers(HttpMethod.DELETE, "/usuarios/deletar/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/usuarios/auth/cadastrar", "/usuarios/auth/login", "/usuarios/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/auth/alterar/roles/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/usuarios/auth/listar").hasAnyRole("ADMIN", "ENTREGADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/usuarios/auth/deletar/**").hasRole("ADMIN")
 
                         .requestMatchers("/categorias/**").hasRole("DONO_RESTAURANTE")
 
