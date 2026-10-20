@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("itempedidos")
+@RequestMapping("/itempedidos")
 public class ItemPedidoController {
 
     private final ItemPedidoService itemPedidoService;

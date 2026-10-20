@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("pratos")
+@RequestMapping("/pratos")
 public class PratoController {
 
     private final PratoService pratoService;

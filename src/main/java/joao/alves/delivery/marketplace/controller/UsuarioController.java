@@ -15,7 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
