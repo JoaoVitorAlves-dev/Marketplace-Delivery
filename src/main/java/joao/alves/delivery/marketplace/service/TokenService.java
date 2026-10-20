@@ -1,4 +1,4 @@
-package joao.alves.delivery.marketplace.config;
+package joao.alves.delivery.marketplace.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

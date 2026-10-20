@@ -1,7 +1,6 @@
 package joao.alves.delivery.marketplace.service;
 
 import jakarta.transaction.Transactional;
-import joao.alves.delivery.marketplace.config.TokenService;
 import joao.alves.delivery.marketplace.domain.Role;
 import joao.alves.delivery.marketplace.domain.Usuario;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
