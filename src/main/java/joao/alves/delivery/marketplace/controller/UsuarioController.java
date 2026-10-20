@@ -1,8 +1,10 @@
 package joao.alves.delivery.marketplace.controller;
 
 import jakarta.validation.Valid;
+import joao.alves.delivery.marketplace.domain.RefreshToken;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
 import joao.alves.delivery.marketplace.dto.request.UsuarioRequest;
+import joao.alves.delivery.marketplace.dto.response.RefreshTokenResponse;
 import joao.alves.delivery.marketplace.dto.response.TokenResponse;
 import joao.alves.delivery.marketplace.dto.response.UsuarioResponse;
 import joao.alves.delivery.marketplace.service.UsuarioService;
@@ -29,13 +31,14 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<UsuarioResponse> cadastrar(@Valid @RequestBody UsuarioRequest usuarioRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(usuarioRequest));
+    public ResponseEntity<Void> cadastrar(@Valid @RequestBody UsuarioRequest usuarioRequest) {
+        usuarioService.cadastrar(usuarioRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(new TokenResponse(usuarioService.login(loginRequest)));
+    public ResponseEntity<RefreshTokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(usuarioService.login(loginRequest));
     }
 
     @GetMapping("/listar")
