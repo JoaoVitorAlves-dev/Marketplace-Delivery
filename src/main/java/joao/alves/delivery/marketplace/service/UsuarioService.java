@@ -1,6 +1,7 @@
 package joao.alves.delivery.marketplace.service;
 
 import jakarta.transaction.Transactional;
+import joao.alves.delivery.marketplace.domain.RefreshToken;
 import joao.alves.delivery.marketplace.domain.Role;
 import joao.alves.delivery.marketplace.domain.Usuario;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
@@ -34,6 +35,14 @@ public class UsuarioService {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
+    }
+
+    @Transactional
+    public RefreshTokenResponse refreshToken(String token) {
+        RefreshToken access = refreshTokenService.validarERotacionar(token);
+
+        String novo = tokenService.gerarToken(access.getUsuario().getUsername());
+        return new RefreshTokenResponse(novo, access.getToken());
     }
 
     @Transactional

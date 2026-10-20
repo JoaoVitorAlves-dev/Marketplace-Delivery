@@ -1,11 +1,9 @@
 package joao.alves.delivery.marketplace.controller;
 
 import jakarta.validation.Valid;
-import joao.alves.delivery.marketplace.domain.RefreshToken;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
 import joao.alves.delivery.marketplace.dto.request.UsuarioRequest;
 import joao.alves.delivery.marketplace.dto.response.RefreshTokenResponse;
-import joao.alves.delivery.marketplace.dto.response.TokenResponse;
 import joao.alves.delivery.marketplace.dto.response.UsuarioResponse;
 import joao.alves.delivery.marketplace.service.UsuarioService;
 import org.springframework.data.domain.Page;
