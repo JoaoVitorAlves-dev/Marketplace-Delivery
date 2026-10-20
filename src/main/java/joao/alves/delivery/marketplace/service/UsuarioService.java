@@ -5,6 +5,7 @@ import joao.alves.delivery.marketplace.domain.Role;
 import joao.alves.delivery.marketplace.domain.Usuario;
 import joao.alves.delivery.marketplace.dto.request.LoginRequest;
 import joao.alves.delivery.marketplace.dto.request.UsuarioRequest;
+import joao.alves.delivery.marketplace.dto.response.RefreshTokenResponse;
 import joao.alves.delivery.marketplace.dto.response.UsuarioResponse;
 import joao.alves.delivery.marketplace.mapper.UsuarioMapper;
 import joao.alves.delivery.marketplace.repository.RoleRepository;
@@ -24,13 +25,15 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, RoleRepository roleRepository, TokenService tokenService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, RoleRepository roleRepository, TokenService tokenService, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RefreshTokenService refreshTokenService) {
         this.usuarioRepository = usuarioRepository;
         this.roleRepository = roleRepository;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Transactional
@@ -58,7 +61,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponse cadastrar(UsuarioRequest usuarioRequest) {
+    public void cadastrar(UsuarioRequest usuarioRequest) {
         if (usuarioRepository.existsByUsername(usuarioRequest.username())) {
             throw new RuntimeException("Username já existe.");
         }
@@ -73,22 +76,19 @@ public class UsuarioService {
         });
 
         entity.setRole(cliente);
-        Usuario save = usuarioRepository.save(entity);
-        return UsuarioMapper.toDTO(save);
+        usuarioRepository.save(entity);
     }
 
     @Transactional
-    public String login(LoginRequest loginRequest) {
+    public RefreshTokenResponse login(LoginRequest loginRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.username(),
-                        loginRequest.password()
-                );
+        Usuario usuario = usuarioRepository.findByUsername(loginRequest.username()).orElseThrow();
 
-        authenticationManager.authenticate(authenticationToken);
+        String access = tokenService.gerarToken(usuario.getUsername());
+        String refresh = refreshTokenService.criar(usuario).getToken();
 
-        return tokenService.gerarToken(loginRequest.username());
+        return new RefreshTokenResponse(access, refresh);
     }
 
     @Transactional
