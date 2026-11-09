@@ -26,7 +26,7 @@ public class UsuarioController {
 
     @PostMapping("/auth/refresh")
     public ResponseEntity<RefreshTokenResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest req) {
-        return ResponseEntity.ok(usuarioService.refreshToken(req.accessToken()));
+        return ResponseEntity.ok(usuarioService.refreshToken(req.refreshToken()));
     }
 
     @PutMapping("/auth/alterar/roles/{id}")

@@ -1,123 +1,90 @@
-# Marketplace API
+# Marketplace Delivery API
 
-API REST de um marketplace de delivery de comida, desenvolvida com **Java e Spring Boot**. Permite cadastrar restaurantes, categorias e pratos, montar pedidos com itens, registrar pagamentos e controlar o acesso por perfis de usuário com **JWT**.
-
-## Funcionalidades
-
-- Cadastro e login de usuários com autenticação **JWT** (stateless)
-- Controle de acesso por perfil (roles)
-- CRUD de restaurantes, categorias e pratos
-- Pedidos com status (carrinho, confirmado, em preparo, pronto, em entrega, entregue)
-- Itens de pedido com cálculo de total
-- Pagamentos vinculados ao pedido
-- Cadastro de endereços por usuário
-- Listagens paginadas (`page`, `size`, `sort`)
-- Padrão em camadas: controller → service → repository, com DTOs e mappers
+API REST para um marketplace de delivery com restaurantes, pratos, pedidos, pagamentos e controle de acesso por perfil. Desenvolvida com Java, Spring Boot, Spring Security e MySQL.
 
 ## Tecnologias
 
 - Java 21
-- Spring Boot (Web, Data JPA, Security, Validation)
-- Hibernate / JPA
-- JWT (jjwt)
-- Lombok
+- Spring Boot
+- Spring Web MVC
+- Spring Data JPA e Hibernate
+- Spring Security
+- JWT com JJWT
 - MySQL
+- Bean Validation
+- Lombok
 - Maven
 
-## Perfis de usuário
+## Funcionalidades
 
-| Role | Descrição |
+- Cadastro e autenticação de usuários.
+- Autenticação stateless com access token JWT e refresh token.
+- Senhas protegidas com BCrypt.
+- Autorização por roles.
+- Gestão de restaurantes, categorias e pratos.
+- Criação e atualização de pedidos.
+- Itens de pedido e pagamentos.
+- Cadastro de endereços.
+- Listagens paginadas.
+
+## Perfis
+
+| Perfil | Acesso principal |
 |---|---|
-| `ADMIN` | Administra usuários e roles |
-| `CLIENTE` | Faz pedidos |
-| `DONO_RESTAURANTE` | Gerencia restaurantes, categorias e pratos |
-| `VENDEDOR` | Gerencia pratos |
-| `ENTREGADOR` | Atualiza entregas |
-| `CAIXA` | Registra pagamentos |
+| `ADMIN` | Gerenciamento de usuários e operações administrativas |
+| `CLIENTE` | Criação de pedidos e consulta de restaurantes |
+| `DONO_RESTAURANTE` | Gerenciamento de restaurantes e categorias |
+| `VENDEDOR` | Gerenciamento de pratos |
+| `ENTREGADOR` | Consulta de usuários e atualização de pedidos |
+| `CAIXA` | Operações de pagamento |
 
-Todo usuário novo é criado com o perfil padrão e só um `ADMIN` altera a role.
-
-## Modelo de domínio
-
-```
-Usuario ──< Endereco
-Usuario ──< Restaurante ──< Categoria ──< Prato
-Usuario ──< Pedido >── Restaurante
-Pedido ──< ItemPedido >── Prato
-Pedido ──< Pagamento
-```
-
-## Estrutura do projeto
-
-```
-src/main/java/.../
-├── config        # Segurança, filtro e serviço de JWT
-├── controller    # Endpoints REST
-├── domain        # Entidades JPA
-├── dto           # Requests e responses
-├── mapper        # Conversão entidade <-> DTO
-├── repository    # Spring Data JPA
-└── service       # Regras de negócio
-```
-
-## Como executar
-
-### Pré-requisitos
+## Requisitos
 
 - JDK 21
-- Maven 3.9+ (ou use o `./mvnw`)
-- MySQL em execução
+- Maven 3.9 ou superior, ou o Maven Wrapper incluído
+- MySQL
 
-### Configuração
+## Configuração
 
-Crie o banco `marketplace` e configure o `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/marketplace
-spring.datasource.username=root
-spring.datasource.password=
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-
-logging.level.org.springframework.security=TRACE
-logging.level.joao.alves.delivery.marketplace=DEBUG
-
-spring.jpa.hibernate.ddl-auto=update
-
-# Chave do JWT: use pelo menos 32 caracteres e não versione o valor real {usei 64 caracteres}
-secret.api.key.marketplace=${JWT_SECRET}
-```
-
-Defina a variável de ambiente `JWT_SECRET` antes de iniciar:
+Crie um banco chamado `marketplace`. Configure as variáveis de ambiente:
 
 ```bash
-export JWT_SECRET="troque-por-uma-chave-longa-e-aleatoria-com-32+-caracteres"
+export DB_USER=marketplace
+export DB_PASSWORD=sua_senha
+export JWT_SECRET=uma_chave_aleatoria_com_pelo_menos_32_caracteres
 ```
 
-### Rodando
+A conexão padrão está configurada para `jdbc:mysql://localhost:3306/marketplace`. Não versione senhas nem uma chave JWT real.
+
+## Executar
+
+Com o Maven Wrapper:
 
 ```bash
-git clone https://github.com/JoaoVitorAlves-dev/Marketplace-Delivery.git
-cd Marketplace-Delivery
 ./mvnw spring-boot:run
 ```
 
-A API sobe em `http://localhost:8080`.
+Ou com Maven instalado:
+
+```bash
+mvn spring-boot:run
+```
+
+A API inicia, por padrão, em `http://localhost:8080`.
+
+## Testes
+
+```bash
+./mvnw test
+```
+
+O teste atualmente presente verifica o carregamento do contexto Spring. Ele não substitui testes de integração dos endpoints, regras de autorização ou operações de pedido.
 
 ## Autenticação
 
-1. Cadastre um usuário: `POST /usuarios/cadastrar`
-2. Faça login: `POST /usuarios/login` (retorna o token)
-3. Envie o token nas demais requisições:
+Cadastre um usuário em `POST /usuarios/auth/cadastrar` e faça login em `POST /usuarios/auth/login`.
 
-```
-Authorization: Bearer SEU_TOKEN
-```
-
-Exemplo de login:
+O login recebe `username` e `password`:
 
 ```json
 {
@@ -126,22 +93,57 @@ Exemplo de login:
 }
 ```
 
-## Endpoints
+Envie o access token nas rotas protegidas:
 
-Todos os recursos seguem o mesmo padrão: `POST /cadastrar`, `GET /listar`, `PUT /atualizar/{id}` e `DELETE /deletar/{id}`.
+```http
+Authorization: Bearer <accessToken>
+```
 
-| Recurso | Base | Observações |
+A configuração atual define validade de uma hora para o access token.
+
+### Refresh token
+
+A rota é `POST /usuarios/auth/refresh`. O serviço espera receber o refresh token e retorna um novo access token e um novo refresh token.
+
+**Atenção:** no código atual, o campo do request chama-se `accessToken`, mas o valor é usado como refresh token. Ajuste o nome desse campo no DTO e no controller para `refreshToken`, ou documente claramente o contrato antes de integrar clientes à API.
+
+## Rotas e permissões
+
+| Recurso | Rotas | Acesso |
 |---|---|---|
-| Usuários | `/usuarios` | `POST /login` e `PUT /alterar/roles/{id}` (somente ADMIN) |
-| Endereços | `/enderecos` | |
-| Restaurantes | `/restaurantes` | |
-| Categorias | `/categorias` | |
-| Pratos | `/pratos` | `GET /listar?nome=` filtra por nome |
-| Pedidos | `/pedidos` | |
-| Itens de pedido | `/itempedidos` | |
-| Pagamentos | `/pagamentos` | |
+| Autenticação | `POST /usuarios/auth/cadastrar`, `POST /usuarios/auth/login`, `POST /usuarios/auth/refresh` | Público |
+| Usuários | `GET /usuarios/auth/listar` | `ADMIN` ou `ENTREGADOR` |
+| Usuários | `PUT /usuarios/auth/alterar/roles/{id}?nome=ROLE` | `ADMIN` |
+| Usuários | `PUT /usuarios/auth/atualizar/{id}` | Autenticado; o serviço permite alterar apenas a própria conta |
+| Usuários | `DELETE /usuarios/auth/deletar/{id}` | `ADMIN` |
+| Endereços | `/enderecos/**` | Autenticado |
+| Restaurantes | `GET /restaurantes/**` | `DONO_RESTAURANTE`, `ADMIN` ou `CLIENTE` |
+| Restaurantes | Escrita em `/restaurantes/**` | `DONO_RESTAURANTE` ou `ADMIN` |
+| Categorias | `/categorias/**` | `DONO_RESTAURANTE` |
+| Pratos | `GET /pratos/**` | Autenticado |
+| Pratos | Escrita em `/pratos/**` | `VENDEDOR` ou `DONO_RESTAURANTE` |
+| Pedidos | `POST /pedidos/cadastrar` | `CLIENTE` |
+| Pedidos | `PUT /pedidos/atualizar/{id}` | `ENTREGADOR`, `DONO_RESTAURANTE`, `VENDEDOR` ou `ADMIN` |
+| Pedidos | `DELETE /pedidos/**` | `ADMIN` |
+| Pedidos e itens | Demais rotas protegidas | Autenticado |
+| Pagamentos | `/pagamentos/**` | `CAIXA` |
+
+As listagens usam paginação Spring Data, com parâmetros como `page`, `size` e `sort`. A listagem de pratos também recebe o parâmetro `nome`, por exemplo: `GET /pratos/listar?nome=pizza`.
+
+## Estrutura do projeto
+
+```text
+src/main/java/joao/alves/delivery/marketplace/
+├── config/       # Segurança, filtro JWT e configuração
+├── controller/   # Endpoints REST
+├── domain/       # Entidades e regras do domínio
+├── dto/          # Requests e responses
+├── mapper/       # Conversão entre entidades e DTOs
+├── repository/   # Acesso a dados com Spring Data JPA
+└── service/      # Regras de negócio
+```
 
 ## Autor
 
-**João Vitor Alves**  
-[GitHub](https://github.com/JoaoVitorAlves-dev) · [Repositório do projeto](https://github.com/JoaoVitorAlves-dev/Marketplace-Delivery)
+**João Vitor de Jesus Alves**  
+[GitHub](https://github.com/JoaoVitorAlves-dev) · [Repositório Marketplace-Delivery](https://github.com/JoaoVitorAlves-dev/Marketplace-Delivery)
