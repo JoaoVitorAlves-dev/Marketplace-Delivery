@@ -119,4 +119,57 @@ O login recebe `username` e `password`:
 Envie o access token nas rotas protegidas:
 
 ```http
-Authorization: Bearer
+Authorization: Bearer <accessToken>
+```
+
+A configuração atual define validade de uma hora para o access token.
+
+### Refresh token
+
+A rota é `POST /usuarios/auth/refresh`. O serviço espera receber o refresh token e retorna um novo access token e um novo refresh token.
+
+**Atenção:** no código atual, o campo do request chama-se `accessToken`, mas o valor é usado como refresh token. Ajuste o nome desse campo no DTO e no controller para `refreshToken`, ou documente claramente o contrato antes de integrar clientes à API.
+
+## Rotas e permissões
+
+| Recurso | Rotas | Acesso |
+|---|---|---|
+| Autenticação | `POST /usuarios/auth/cadastrar`, `POST /usuarios/auth/login`, `POST /usuarios/auth/refresh` | Público |
+| Usuários | `GET /usuarios/auth/listar` | `ADMIN` ou `ENTREGADOR` |
+| Usuários | `PUT /usuarios/auth/alterar/roles/{id}?nome=ROLE` | `ADMIN` |
+| Usuários | `PUT /usuarios/auth/atualizar/{id}` | Autenticado; o serviço permite alterar apenas a própria conta |
+| Usuários | `DELETE /usuarios/auth/deletar/{id}` | `ADMIN` |
+| Endereços | `/enderecos/**` | Autenticado |
+| Restaurantes | `GET /restaurantes/**` | `DONO_RESTAURANTE`, `ADMIN` ou `CLIENTE` |
+| Restaurantes | Escrita em `/restaurantes/**` | `DONO_RESTAURANTE` ou `ADMIN` |
+| Categorias | `/categorias/**` | `DONO_RESTAURANTE` |
+| Pratos | `GET /pratos/**` | Autenticado |
+| Pratos | Escrita em `/pratos/**` | `VENDEDOR` ou `DONO_RESTAURANTE` |
+| Pedidos | `POST /pedidos/cadastrar` | `CLIENTE` |
+| Pedidos | `PUT /pedidos/atualizar/{id}` | `ENTREGADOR`, `DONO_RESTAURANTE`, `VENDEDOR` ou `ADMIN` |
+| Pedidos | `DELETE /pedidos/**` | `ADMIN` |
+| Pedidos e itens | Demais rotas protegidas | Autenticado |
+| Pagamentos | `/pagamentos/**` | `CAIXA` |
+
+As listagens usam paginação Spring Data, com parâmetros como `page`, `size` e `sort`. A listagem de pratos também recebe o parâmetro `nome`, por exemplo: `GET /pratos/listar?nome=pizza`.
+
+## Estrutura do projeto
+
+```text
+Dockerfile        # Imagem da API
+compose.yaml      # API + MySQL
+
+src/main/java/joao/alves/delivery/marketplace/
+├── config/       # Segurança, filtro JWT e configuração
+├── controller/   # Endpoints REST
+├── domain/       # Entidades e regras do domínio
+├── dto/          # Requests e responses
+├── mapper/       # Conversão entre entidades e DTOs
+├── repository/   # Acesso a dados com Spring Data JPA
+└── service/      # Regras de negócio
+```
+
+## Autor
+
+**João Vitor de Jesus Alves**  
+[GitHub](https://github.com/JoaoVitorAlves-dev) · [Repositório Marketplace-Delivery](https://github.com/JoaoVitorAlves-dev/Marketplace-Delivery)
